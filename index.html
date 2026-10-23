@@ -28,6 +28,7 @@ pre{margin:0}#g,.gt{position:sticky;left:0;padding:12px 8px 12px 10px;text-align
 .src{padding:12px 14px;white-space:pre;tab-size:2;flex:1}
 .hl{position:absolute;left:0;right:0;height:20px;background:color-mix(in srgb,var(--accent) 24%,transparent);pointer-events:none}
 .t{color:var(--t)}.s{color:var(--s)}.c{color:var(--c);font-style:italic}.k{color:var(--k)}
+#modes{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}#modes button{flex:1 1 0;min-width:96px}#p-view.sp iframe{height:46vh}#p-view.sp #logic{max-height:48vh;overflow:auto}
 iframe{width:100%;height:62vh;border:0;background:#fff;display:block}
 .hint{padding:8px 10px;font-size:.82rem;color:var(--muted)}
 .row{padding:10px;border-bottom:1px solid var(--line);font-size:.88rem;word-break:break-all}.row:last-child{border:0}
@@ -42,10 +43,10 @@ iframe{width:100%;height:62vh;border:0;background:#fff;display:block}
 <p class="sub">Link daalo: HTML, CSS, JS, images, API aur live preview alag alag milenge.</p>
 <form id="f"><input type="text" id="u" placeholder="example.com" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" aria-label="Website link"><button id="go">Get source</button></form>
 <p id="st" role="status"></p>
-<div id="res"><div id="tabs"></div>
-<section class="pane" id="p-view"><div class="bar"><button class="g on" id="ins">Inspect clicks: ON</button><span class="meta">ON mein kisi button/element par click karo, uska logic neeche aayega.</span></div>
+<div id="res"><div id="modes"><button class="g on" data-m="web">WebView</button><button class="g" data-m="src">Source code</button><button class="g" data-m="split">Website + Code</button></div><div id="tabs"></div>
+<section class="pane" id="p-view"><div class="bar"><button class="g on" id="ins">Click bhi chale: ON</button><span class="meta" id="vm"></span></div>
 <iframe id="fr" sandbox="allow-scripts allow-forms" title="Preview"></iframe>
-<div class="hint">Kuch sites (login/bank/Google) preview mein adhoori khulti hain; source tabs phir bhi chalte hain.</div>
+<div class="hint">Kuch sites (login/bank/Google) yahan adhoori khulti hain; Source code mode phir bhi chalta hai.</div>
 <div id="logic"></div></section>
 <section class="pane" id="p-html"></section><section class="pane" id="p-css"></section><section class="pane" id="p-js"></section>
 <section class="pane" id="p-img"></section><section class="pane" id="p-api"></section></div>
@@ -83,13 +84,19 @@ function codePane(pane,lang,items,selId,line){
  const sel=pane.querySelector('select');if(sel)sel.onchange=()=>codePane(pane,lang,items,sel.value);
  pane.querySelector('[data-a=copy]').onclick=async e=>{try{await navigator.clipboard.writeText(it.text||'');e.target.textContent='Copied'}catch{e.target.textContent='Failed'}setTimeout(()=>e.target.textContent='Copy',1400)};
  pane.querySelector('[data-a=dl]').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([it.text||'']));a.download=(it.label.split('/').pop().split('?')[0]||'file')+(lang==='html'&&!/\.html?$/.test(it.label)?'.html':'');a.click()}}
-function openCode(kind,id,line){tab(kind);codePane($('p-'+kind),kind,S[kind],id,line);$('p-'+kind).scrollIntoView({block:'start'})}
+function openCode(kind,id,line){S.src=kind;setMode('src');codePane($('p-'+kind),kind,S[kind],id,line);$('p-'+kind).scrollIntoView({block:'start'})}
 
 // ---------- tabs ----------
-const TABS=[['view','Preview'],['html','HTML'],['css','CSS'],['js','JS'],['img','Images'],['api','API']];
-function drawTabs(cur){$('tabs').innerHTML=TABS.map(([k,n])=>{const c=k==='css'||k==='js'?S[k].length:k==='img'?S.img.length:k==='api'?S.api.length:'';return `<button class="g${k===cur?' on':''}" data-k="${k}">${n}${c!==''?' ('+c+')':''}</button>`}).join('');
+const TABS=[['html','HTML'],['css','CSS'],['js','JS'],['img','Images'],['api','API']];
+function drawTabs(){const cur=S.src;$('tabs').innerHTML=TABS.map(([k,n])=>{const c=k==='css'||k==='js'?S[k].length:k==='img'?S.img.length:k==='api'?S.api.length:'';return `<button class="g${k===cur?' on':''}" data-k="${k}">${n}${c!==''?' ('+c+')':''}</button>`}).join('');
  $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>tab(b.dataset.k))}
-function tab(k){drawTabs(k);document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('show',p.id==='p-'+k))}
+function tab(k){S.src=k;drawTabs();document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('show',S.mode==='src'?p.id==='p-'+k:p.id==='p-view'))}
+function setMode(m){S.mode=m;document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+ $('tabs').style.display=m==='src'?'flex':'none';$('ins').style.display=m==='split'?'':'none';$('p-view').classList.toggle('sp',m==='split');
+ $('logic').style.display=m==='split'&&S.picked?'block':'none';
+ $('vm').textContent=m==='split'?(S.pass?'Click karo: website ke andar chalega aur neeche uska code dikhega.':'Click karo: sirf code dikhega, website mein click nahi chalega.'):'Website normal chal rahi hai.';
+ tab(S.src||'html');const w=$('fr').contentWindow;if(w)w.postMessage({__cmd:'mode',value:m==='split'?(S.pass?'pass':'block'):'off'},'*')}
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
 function lineOf(t,i){let n=1;for(let j=0;j<i;j++)if(t.charCodeAt(j)===10)n++;return n}
 
 // ---------- parse + load ----------
@@ -130,13 +137,15 @@ function renderAll(cur){S.cur=cur;
  codePane($('p-html'),'html',[{id:'h',label:S.finalUrl,url:S.finalUrl,text:S.html}]);
  codePane($('p-css'),'css',S.css);codePane($('p-js'),'js',S.js);
  $('p-img').innerHTML=S.img.length?`<div class="grid">${S.img.map(i=>`<a href="${i.url.startsWith('data:')?'#':esc(i.url)}" target="_blank" rel="noopener noreferrer"><img loading="lazy" referrerpolicy="no-referrer" alt="load nahi hui" src="${esc(i.url)}">${i.url.startsWith('data:')?'embedded image':esc(i.url.split('/').pop().split('?')[0]||i.url)}<br><i>${i.from}</i></a>`).join('')}</div>`:'<div class="hint">Koi image nahi mili.</div>';
- $('p-api').innerHTML=S.api.length?S.api.map((a,n)=>`<div class="row"><span class="b">${a.method}</span>${esc(a.url||'')}<br><i>${a.src==='live'?'preview mein live dikhi':a.src==='form'?'HTML form':esc(a.file)+(a.line?':'+a.line:'')}</i>${a.id?` <button class="g" data-n="${n}">Code kholo</button>`:''}</div>`).join(''):'<div class="hint">Code mein koi API call nahi mili. Preview mein buttons dabane se live calls yahan aa sakti hain.</div>';
- $('p-api').querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const a=S.api[b.dataset.n];openCode('js',a.id,a.line)});
- drawTabs(cur);tab(cur)}
+ renderApi();
+ drawTabs();setMode(S.mode)}
 
+function renderApi(){
+ $('p-api').innerHTML=S.api.length?S.api.map((a,n)=>`<div class="row"><span class="b">${a.method}</span>${esc(a.url||'')}<br><i>${a.src==='live'?'preview mein live dikhi':a.src==='form'?'HTML form':esc(a.file)+(a.line?':'+a.line:'')}</i>${a.id?` <button class="g" data-n="${n}">Code kholo</button>`:''}</div>`).join(''):'<div class="hint">Code mein koi API call nahi mili. Preview mein buttons dabane se live calls yahan aa sakti hain.</div>';
+ $('p-api').querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const a=S.api[b.dataset.n];openCode('js',a.id,a.line)});}
 // ---------- iframe instrument (runs INSIDE the previewed page) ----------
 function atlasInject(){
- var P=parent,store=new WeakMap(),inspect=true,tracing=false,calls=[],last=null,nets=0;
+ var P=parent,store=new WeakMap(),mode='off',synth=false,tt=0,tracing=false,calls=[],last=null,nets=0;
  function send(m){m.__atlas=1;try{P.postMessage(m,'*')}catch(e){}}
  function sh(x,n){x=String(x==null?'':x);return x.length>(n||500)?x.slice(0,n||500)+'…':x}
  function note(kind,method,url,body){var u=url;try{u=new URL(url,document.baseURI).href}catch(e){}
@@ -164,14 +173,15 @@ function atlasInject(){
  function describe(el){var f=el.closest&&el.closest('form'),a=el.closest&&el.closest('a[href]');
   return{tag:el.tagName.toLowerCase(),id:el.id||'',cls:typeof el.className==='string'?el.className:'',text:sh((el.innerText||el.value||'').trim(),80),html:sh(el.outerHTML,500),selector:sel(el),href:a?a.href:'',form:f?{action:f.action,method:(f.method||'get').toUpperCase()}:null,handlers:handlers(el)}}
  add.call(window,'click',function(e){var el=e.target,a=el&&el.closest?el.closest('a[href]'):null;
-  if(tracing){if(a){e.preventDefault();calls.push({kind:'navigate',method:'GET',url:a.href,body:''})}return}
-  if(inspect){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();last=el;send({type:'pick',info:describe(el)});return}
+  if(synth||(tracing&&mode!=='pass')){if(a){e.preventDefault();calls.push({kind:'navigate',method:'GET',url:a.href,body:''})}return}
+  if(mode==='block'){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();last=el;send({type:'pick',info:describe(el)});return}
+  if(mode==='pass'){last=el;if(a)e.preventDefault();send({type:'pick',info:describe(el)});calls=[];tracing=true;var b0=document.documentElement.outerHTML.length;if(a)calls.push({kind:'navigate',method:'GET',url:a.href,body:''});clearTimeout(tt);tt=setTimeout(function(){tracing=false;send({type:'trace',calls:calls,delta:document.documentElement.outerHTML.length-b0})},1500);return}
   if(a){e.preventDefault();send({type:'nav',href:a.href})}},true);
  add.call(window,'submit',function(e){e.preventDefault();var f=e.target;if(tracing){var names=[];try{new FormData(f).forEach(function(v,k){names.push(k)})}catch(x){}calls.push({kind:'form submit',method:(f.method||'get').toUpperCase(),url:f.action,body:'fields: '+names.join(', ')})}},true);
  add.call(window,'message',function(ev){var d=ev.data;if(!d||!d.__cmd)return;
-  if(d.__cmd==='inspect')inspect=!!d.on;
-  if(d.__cmd==='run'&&last){tracing=true;calls=[];var b=document.documentElement.outerHTML.length;try{last.click()}catch(x){calls.push({kind:'error',method:'',url:String(x),body:''})}
-   setTimeout(function(){tracing=false;send({type:'trace',calls:calls,delta:document.documentElement.outerHTML.length-b})},1500)}});
+  if(d.__cmd==='mode')mode=d.value;
+  if(d.__cmd==='run'&&last){synth=true;tracing=true;calls=[];var b=document.documentElement.outerHTML.length;try{last.click()}catch(x){calls.push({kind:'error',method:'',url:String(x),body:''})}
+   setTimeout(function(){tracing=false;synth=false;send({type:'trace',calls:calls,delta:document.documentElement.outerHTML.length-b})},1500)}});
 }
 function buildDoc(html,base){
  const inj='<base href="'+esc(base)+'"><'+'script>('+atlasInject.toString()+')()<\/script>';
@@ -179,11 +189,12 @@ function buildDoc(html,base){
  return /<head[^>]*>/i.test(html)?html.replace(/<head[^>]*>/i,m=>m+inj):inj+html}
 
 // ---------- logic panel ----------
-function showLogic(i){const L=$('logic');L.style.display='block';
+function showLogic(i){const L=$('logic');S.picked=true;L.style.display='block';
  const hs=i.handlers.length?i.handlers.map(h=>`<h3><span class="b">${esc(h.type)}</span>${esc(h.where)} <i>(${h.kind})</i></h3><pre>${esc(h.src)}</pre>`).join(''):'<div class="hint">Is element par koi click handler nahi mila (ya page ki JS chali nahi). Neeche "Code mein dhoondo" dekho.</div>';
- L.innerHTML=`<div class="row"><b>&lt;${i.tag}&gt;</b> ${esc(i.text)}<br><i>${esc(i.selector)}</i><pre>${esc(i.html)}</pre>${i.href?'Link: '+esc(i.href)+'<br>':''}${i.form?'Form: '+i.form.method+' '+esc(i.form.action)+'<br>':''}</div><div class="row"><b>Logic (click par kya chalta hai)</b>${hs}<button class="g" id="cp">Copy logic</button> <button class="g" id="run">Click chalao aur dekho kya hua</button><div id="tr"></div></div><div class="row" id="fd"></div>`;
+ L.innerHTML=`<div class="row"><b>&lt;${i.tag}&gt;</b> ${esc(i.text)}<br><i>${esc(i.selector)}</i><pre>${esc(i.html)}</pre>${i.href?'Link: '+esc(i.href)+'<br>':''}${i.form?'Form: '+i.form.method+' '+esc(i.form.action)+'<br>':''}</div><div class="row"><b>Logic (click par kya chalta hai)</b>${hs}<button class="g" id="cp">Copy logic</button> ${i.href?'<button class="g" id="ol">Is link ko viewer mein kholo</button> ':''}${S.pass?'':'<button class="g" id="run">Click chalao aur dekho kya hua</button>'}<div id="tr">${S.pass?'<div class="hint">Click website ke andar chal gaya; uski network/alert activity yahan aayegi…</div>':''}</div></div><div class="row" id="fd"></div>`;
  $('cp').onclick=async e=>{try{await navigator.clipboard.writeText(i.handlers.map(h=>`// ${h.type} on ${h.where}\n${h.src}`).join('\n\n'));e.target.textContent='Copied'}catch{}};
- $('run').onclick=()=>{$('tr').innerHTML='<div class="hint">Chal raha hai…</div>';$('fr').contentWindow.postMessage({__cmd:'run'},'*')};
+ if($('ol'))$('ol').onclick=()=>{$('u').value=i.href;$('f').requestSubmit()};
+ if($('run'))$('run').onclick=()=>{$('tr').innerHTML='<div class="hint">Chal raha hai…</div>';$('fr').contentWindow.postMessage({__cmd:'run'},'*')};
  const terms=[];if(i.id)terms.push(i.id);i.cls.split(/\s+/).filter(Boolean).slice(0,3).forEach(c=>terms.push(c));
  i.handlers.filter(h=>h.kind==='function').forEach(h=>{const m=h.where.match(/^function (\S+)\(/);if(m)terms.push(m[1])});
  const hits=[];S.js.forEach(it=>{if(!it.text)return;terms.forEach(t=>{const re=new RegExp('(?:[\'"`#.]|getElementById\\([\'"]|function\\s+)'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g');let m,n=0;while((m=re.exec(it.text))&&n++<3&&hits.length<12){const ln=lineOf(it.text,m.index);hits.push({it,ln,t,snip:it.text.split('\n')[ln-1].trim().slice(0,140)})}})});
@@ -193,18 +204,18 @@ function showLogic(i){const L=$('logic');L.style.display='block';
 window.addEventListener('message',ev=>{const d=ev.data;if(!S||!d||!d.__atlas||ev.source!==$('fr').contentWindow)return;
  if(d.type==='pick')showLogic(d.info);
  if(d.type==='net'&&!S.live.some(x=>x.method+x.url===d.call.method+d.call.url)){S.live.push({method:d.call.method||'?',url:d.call.url,src:'live'});findApis();$('p-api').dataset.stale=1;renderApiOnly()}
- if(d.type==='trace'){$('tr').innerHTML=(d.calls.length?d.calls.map(c=>`<div class="row"><span class="b">${esc(c.kind)}${c.method?' '+esc(c.method):''}</span>${esc(c.url)}${c.body?'<br><i>'+esc(typeof c.body==='string'?c.body:'')+'</i>':''}</div>`).join(''):'<div class="hint">Koi network call, alert ya navigation nahi hui.</div>')+`<div class="hint">Page ka HTML ${d.delta>=0?'+':''}${d.delta} characters badla.</div>`}
+ if(d.type==='trace'&&$('tr')){$('tr').innerHTML=(d.calls.length?d.calls.map(c=>`<div class="row"><span class="b">${esc(c.kind)}${c.method?' '+esc(c.method):''}</span>${esc(c.url)}${c.body?'<br><i>'+esc(typeof c.body==='string'?c.body:'')+'</i>':''}</div>`).join(''):'<div class="hint">Koi network call, alert ya navigation nahi hui.</div>')+`<div class="hint">Page ka HTML ${d.delta>=0?'+':''}${d.delta} characters badla.</div>`}
  if(d.type==='nav'){if(confirm('Ye link is viewer mein kholein?\n'+d.href)){$('u').value=d.href;$('f').requestSubmit()}}});
-function renderApiOnly(){const c=S.cur;renderAll(c==='view'?'view':c)}
-$('ins').onclick=()=>{const on=!$('ins').classList.contains('on');$('ins').classList.toggle('on',on);$('ins').textContent='Inspect clicks: '+(on?'ON':'OFF');$('fr').contentWindow.postMessage({__cmd:'inspect',on},'*')};
+function renderApiOnly(){renderApi();drawTabs()}
+$('ins').onclick=()=>{S.pass=!S.pass;$('ins').classList.toggle('on',S.pass);$('ins').textContent='Click bhi chale: '+(S.pass?'ON':'OFF');setMode('split')};
 
 $('f').addEventListener('submit',async e=>{e.preventDefault();const url=$('u').value.trim();if(!url)return setSt('Pehle link paste karo.',true);
  $('go').disabled=true;$('res').style.display='none';$('logic').style.display='none';setSt('Fetching…');
  try{const d=await load(url);const p=parse(d.html,d.finalUrl);
-  S={html:d.html,finalUrl:d.finalUrl,css:p.css,js:p.js,forms:p.forms,imgMap:p.img,img:[],api:[],live:[],cur:'view'};
+  S={html:d.html,finalUrl:d.finalUrl,css:p.css,js:p.js,forms:p.forms,imgMap:p.img,img:[],api:[],live:[],cur:'view',mode:'web',pass:true,src:'html',picked:false};
   p.css.concat(p.js).forEach(x=>{if(!x.ext)x.text=x.text});
   S.css.concat(S.js).forEach(x=>{if(x.ext)x.text=null});
-  $('ins').classList.add('on');$('ins').textContent='Inspect clicks: ON';
+  $('ins').classList.add('on');$('ins').textContent='Click bhi chale: ON';
   $('fr').srcdoc=buildDoc(d.html,d.finalUrl);$('res').style.display='block';
   S.css.forEach(c=>c.text&&cssImgs(c.text,c.url));S.img=[...S.imgMap].map(([url,from])=>({url,from}));findApis();renderAll('view');
   setSt('Files load ho rahi hain…');await loadAll()}
