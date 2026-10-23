@@ -1,13 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
-import type { Manifest } from '@/lib/types';
-import { fetchManifest } from '@/lib/api-client';
+import { manifest } from '@/lib/manifest';
 
 export function useManifest() {
-  const [manifest, setManifest] = useState<Manifest | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    fetchManifest().then(setManifest).catch((e) => setError(String(e)));
-  }, []);
-  return { manifest, error };
+  return { manifest, error: null as string | null };
 }
