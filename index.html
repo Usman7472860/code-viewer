@@ -51,19 +51,20 @@ iframe{width:100%;height:62vh;border:0;background:#fff;display:block}
 <section class="pane" id="p-img"></section><section class="pane" id="p-api"></section></div>
 </main>
 <script>
+window.addEventListener('error',e=>{const s=document.getElementById('st');if(s){s.textContent='JS error: '+e.message;s.className='err'}});
 const $=id=>document.getElementById(id);
 const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const fmt=b=>b>1048576?(b/1048576).toFixed(1)+' MB':(b/1024).toFixed(1)+' KB';
 const abs=(v,b)=>{try{return new URL(v,b).href}catch{return null}};
 let S=null;
 const RX={
- html:/<!--[\s\S]*?-->|<\/?[a-zA-Z][\w:-]*|\/?>|"[^"\n]*"|'[^'\n]*'/g,
+ html:/<\!--[\s\S]*?-->|<\/?[a-zA-Z][\w:-]*|\/?>|"[^"\n]*"|'[^'\n]*'/g,
  js:/\/\*[\s\S]*?\*\/|\/\/[^\n]*|`(?:\\[\s\S]|[^`\\])*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\b(?:const|let|var|function|return|if|else|for|while|switch|case|break|new|class|import|export|async|await|try|catch|throw|typeof|this|null|undefined|true|false)\b/g,
  css:/\/\*[\s\S]*?\*\/|"[^"\n]*"|'[^'\n]*'|@[\w-]+|[\w-]+(?=\s*:)/g};
 function hi(text,lang){
  const re=new RegExp(RX[lang].source,'g');let o='',l=0,m;
  while((m=re.exec(text))){o+=esc(text.slice(l,m.index));const x=m[0];
-  const c=x.startsWith('/*')||x.startsWith('//')||x.startsWith('<!--')?'c':/^["'`]/.test(x)?'s':lang==='html'?(x.startsWith('<')?'t':'k'):lang==='css'?(x[0]==='@'?'k':'t'):'k';
+  const c=x.startsWith('/*')||x.startsWith('//')||x.startsWith('<'+'!--')?'c':/^["'`]/.test(x)?'s':lang==='html'?(x.startsWith('<')?'t':'k'):lang==='css'?(x[0]==='@'?'k':'t'):'k';
   o+=`<span class="${c}">${esc(x)}</span>`;l=m.index+x.length;if(!x.length)re.lastIndex++}
  return o+esc(text.slice(l))}
 function setSt(m,e){$('st').textContent=m;$('st').className=e?'err':''}
@@ -98,7 +99,7 @@ function parse(html,base){
  d.querySelectorAll('link[rel~=stylesheet][href]').forEach(e=>{const u=abs(e.getAttribute('href'),base);if(u)css.push({id:'c'+ci++,label:u,url:u,ext:true})});
  d.querySelectorAll('style').forEach(e=>css.push({id:'c'+ci++,label:'inline <style> #'+(ci),url:base,text:e.textContent}));
  d.querySelectorAll('script').forEach(e=>{const ty=(e.type||'').toLowerCase();if(ty&&!/javascript|module/.test(ty))return;
-  if(e.src||e.getAttribute('src')){const u=abs(e.getAttribute('src'),base);if(u)js.push({id:'j'+ji++,label:u,url:u,ext:true})}else if(e.textContent.trim())js.push({id:'j'+ji++,label:'inline <script> #'+(ji+1),url:base,text:e.textContent})});
+  if(e.src||e.getAttribute('src')){const u=abs(e.getAttribute('src'),base);if(u)js.push({id:'j'+ji++,label:u,url:u,ext:true})}else if(e.textContent.trim())js.push({id:'j'+ji++,label:'inline <'+'script> #'+(ji+1),url:base,text:e.textContent})});
  d.querySelectorAll('img').forEach(e=>{['src','data-src'].forEach(a=>addImg(e.getAttribute(a)&&abs(e.getAttribute(a),base),'<img>'))});
  d.querySelectorAll('[srcset]').forEach(e=>e.getAttribute('srcset').split(',').forEach(s=>addImg(abs(s.trim().split(/\s+/)[0],base),'srcset')));
  d.querySelectorAll('video[poster]').forEach(e=>addImg(abs(e.getAttribute('poster'),base),'poster'));
@@ -173,7 +174,7 @@ function atlasInject(){
    setTimeout(function(){tracing=false;send({type:'trace',calls:calls,delta:document.documentElement.outerHTML.length-b})},1500)}});
 }
 function buildDoc(html,base){
- const inj='<base href="'+esc(base)+'"><script>('+atlasInject.toString()+')()<\/script>';
+ const inj='<base href="'+esc(base)+'"><'+'script>('+atlasInject.toString()+')()<\/script>';
  html=html.replace(/<meta[^>]+http-equiv=["']?content-security-policy["']?[^>]*>/gi,'');
  return /<head[^>]*>/i.test(html)?html.replace(/<head[^>]*>/i,m=>m+inj):inj+html}
 
