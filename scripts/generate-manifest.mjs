@@ -1,14 +1,3 @@
----
-
-### FILE: scripts/generate-manifest.mjs
-```js
-#!/usr/bin/env node
-/**
- * Build-time self-inspection.
- * data/manifest.json   -> har text file ka content + meta
- * data/logic-map.json  -> har `// @logic <id>` block + usko trigger karne wale button
- * data/hardcodes.json  -> har `// @hardcode key = value` literal
- */
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
