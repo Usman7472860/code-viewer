@@ -1,7 +1,5 @@
 ---
 
-# SELF-SCAN ENGINE
-
 ### FILE: scripts/generate-manifest.mjs
 ```js
 #!/usr/bin/env node
