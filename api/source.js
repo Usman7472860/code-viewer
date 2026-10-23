@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
           signal: ctrl.signal,
           headers: {
             'User-Agent': 'Mozilla/5.0 (compatible; SourceViewer/1.0)',
-            Accept: 'text/html,application/xhtml+xml,*/*;q=0.8',
+            Accept: '*/*', Referer: current.origin + '/',
           },
         });
       } finally { clearTimeout(timer); }
