@@ -1,14 +1,9 @@
 # View Source
 
-Link daalo, us website ka HTML source dikhao (line numbers, copy, download).
+Link daalo: HTML, CSS, JS, images, API aur live preview (Inspect clicks) alag alag.
 
-## Vercel par chalane ka tareeqa
-1. Is poore folder ko GitHub repo mein daalo (ya `vercel` CLI use karo).
-2. vercel.com par "Add New > Project" se repo import karo.
-3. Koi setting nahi badalni. Deploy dabao.
-
+Deploy: repo ko Vercel par import karo, Framework = Other, Deploy.
 Local test: `npx vercel dev`
 
-Files:
 - `index.html`: poora page
-- `api/source.js`: server function jo link ka HTML la kar deti hai (browser seedha nahi la sakta, CORS ki wajah se)
+- `api/source.js`: server function jo link/CSS/JS fetch karti hai (CORS ki wajah se)

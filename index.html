@@ -1,122 +1,211 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>View Source</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg:#f2efe8; --panel:#fffdf8; --ink:#1d2a2e; --muted:#6c7a7d; --line:#d9d4c7;
-    --accent:#0f6b5c; --accent-ink:#fff; --tag:#0f6b5c; --str:#a8501f; --com:#8b968f; --end:#7a4b9c;
-    --err:#b3261e;
-  }
-  @media (prefers-color-scheme:dark){
-    :root{ --bg:#14201f; --panel:#1b2b2a; --ink:#e6efe9; --muted:#8fa5a0; --line:#2c4240;
-      --accent:#58d3b8; --accent-ink:#0b1a18; --tag:#58d3b8; --str:#f0a968; --com:#6f8a84; --end:#c9a2e8; --err:#ff8a80; }
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "IBM Plex Sans",system-ui,sans-serif}
-  main{max-width:1100px;margin:0 auto;padding:20px 14px 40px}
-  h1{font-size:1.5rem;margin:8px 0 4px;letter-spacing:-.01em}
-  .sub{margin:0 0 16px;color:var(--muted);font-size:.95rem}
-  form{display:flex;gap:8px;flex-wrap:wrap}
-  input[type=text]{flex:1 1 260px;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:inherit;font-family:"IBM Plex Mono",monospace;font-size:.95rem}
-  input[type=text]:focus,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-  button{padding:12px 18px;border:0;border-radius:8px;background:var(--accent);color:var(--accent-ink);font:600 1rem "IBM Plex Sans",sans-serif;cursor:pointer}
-  button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);padding:8px 12px;font-size:.9rem;font-weight:500}
-  button:disabled{opacity:.6;cursor:wait}
-  #status{margin:14px 0 0;min-height:1.4em;font-size:.92rem;color:var(--muted)}
-  #status.err{color:var(--err)}
-  #result{display:none;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}
-  .bar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line)}
-  .meta{font-size:.85rem;color:var(--muted);word-break:break-all}
-  .acts{display:flex;gap:8px}
-  .code{display:flex;overflow:auto;max-height:75vh;font:400 13px/1.6 "IBM Plex Mono",ui-monospace,monospace}
-  pre{margin:0;padding:12px 0}
-  #gutter{position:sticky;left:0;padding:12px 10px 12px 12px;text-align:right;color:var(--muted);background:var(--panel);border-right:1px solid var(--line);user-select:none}
-  #src{padding:12px 16px;white-space:pre;tab-size:2;flex:1}
-  .t{color:var(--tag)} .s{color:var(--str)} .c{color:var(--com);font-style:italic} .e{color:var(--end)}
-</style>
-</head>
-<body>
-<main>
-  <h1>View Source</h1>
-  <p class="sub">Kisi bhi website ka link daalo, uska HTML source code yahan dikhega.</p>
-
-  <form id="f">
-    <input type="text" id="u" placeholder="example.com" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" aria-label="Website link">
-    <button id="go" type="submit">Get source</button>
-  </form>
-  <p id="status" role="status"></p>
-
-  <section id="result">
-    <div class="bar">
-      <div class="meta" id="meta"></div>
-      <div class="acts">
-        <button class="ghost" id="copy" type="button">Copy</button>
-        <button class="ghost" id="dl" type="button">Download</button>
-      </div>
-    </div>
-    <div class="code"><pre id="gutter" aria-hidden="true"></pre><pre id="src"></pre></div>
-  </section>
+:root{--bg:#f2efe8;--panel:#fffdf8;--ink:#1d2a2e;--muted:#6c7a7d;--line:#d9d4c7;--accent:#0f6b5c;--ai:#fff;--t:#0f6b5c;--s:#a8501f;--c:#8b968f;--k:#7a4b9c;--err:#b3261e}
+@media(prefers-color-scheme:dark){:root{--bg:#14201f;--panel:#1b2b2a;--ink:#e6efe9;--muted:#8fa5a0;--line:#2c4240;--accent:#58d3b8;--ai:#0b1a18;--t:#58d3b8;--s:#f0a968;--c:#6f8a84;--k:#c9a2e8;--err:#ff8a80}}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:18px 12px 40px}h1{font-size:1.45rem;margin:6px 0 2px}
+.sub{margin:0 0 14px;color:var(--muted);font-size:.93rem}
+form{display:flex;gap:8px;flex-wrap:wrap}
+input[type=text],select{padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font:.92rem "IBM Plex Mono",monospace}
+#u{flex:1 1 250px;min-width:0}select{max-width:100%}
+button{padding:11px 16px;border:0;border-radius:8px;background:var(--accent);color:var(--ai);font:600 1rem "IBM Plex Sans",sans-serif;cursor:pointer}
+button.g{background:transparent;color:var(--ink);border:1px solid var(--line);padding:7px 11px;font-size:.88rem;font-weight:500}
+button.on{background:var(--accent);color:var(--ai);border-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:disabled{opacity:.6}
+#st{margin:12px 0 0;min-height:1.3em;font-size:.9rem;color:var(--muted)}#st.err{color:var(--err)}
+#res{display:none;margin-top:8px}
+#tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}#tabs button{white-space:nowrap;flex:none}
+.pane{display:none;border:1px solid var(--line);border-radius:10px;background:var(--panel);overflow:hidden}.pane.show{display:block}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:9px 10px;border-bottom:1px solid var(--line)}
+.meta{font-size:.82rem;color:var(--muted);word-break:break-all;flex:1 1 200px}
+.code{overflow:auto;max-height:70vh;font:400 13px/20px "IBM Plex Mono",monospace}
+.in{position:relative;display:flex;min-width:100%;width:max-content}
+pre{margin:0}#g,.gt{position:sticky;left:0;padding:12px 8px 12px 10px;text-align:right;color:var(--muted);background:var(--panel);border-right:1px solid var(--line);user-select:none}
+.src{padding:12px 14px;white-space:pre;tab-size:2;flex:1}
+.hl{position:absolute;left:0;right:0;height:20px;background:color-mix(in srgb,var(--accent) 24%,transparent);pointer-events:none}
+.t{color:var(--t)}.s{color:var(--s)}.c{color:var(--c);font-style:italic}.k{color:var(--k)}
+iframe{width:100%;height:62vh;border:0;background:#fff;display:block}
+.hint{padding:8px 10px;font-size:.82rem;color:var(--muted)}
+.row{padding:10px;border-bottom:1px solid var(--line);font-size:.88rem;word-break:break-all}.row:last-child{border:0}
+.b{display:inline-block;padding:1px 7px;border-radius:5px;background:var(--accent);color:var(--ai);font:600 .75rem "IBM Plex Mono",monospace;margin-right:6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;padding:10px}
+.grid a{color:var(--ink);text-decoration:none;font-size:.75rem;word-break:break-all}
+.grid img{width:100%;height:100px;object-fit:contain;background:repeating-conic-gradient(#8883 0 25%,transparent 0 50%) 0 0/14px 14px;border-radius:6px;display:block;margin-bottom:4px}
+#logic{display:none;border-top:1px solid var(--line)}#logic pre{white-space:pre-wrap;word-break:break-word;font:400 12.5px/1.5 "IBM Plex Mono",monospace;background:color-mix(in srgb,var(--ink) 6%,transparent);padding:8px;border-radius:6px;margin:6px 0;max-height:240px;overflow:auto}
+#logic h3{margin:10px 0 2px;font-size:.95rem}
+</style></head><body><main>
+<h1>View Source</h1>
+<p class="sub">Link daalo: HTML, CSS, JS, images, API aur live preview alag alag milenge.</p>
+<form id="f"><input type="text" id="u" placeholder="example.com" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="url" aria-label="Website link"><button id="go">Get source</button></form>
+<p id="st" role="status"></p>
+<div id="res"><div id="tabs"></div>
+<section class="pane" id="p-view"><div class="bar"><button class="g on" id="ins">Inspect clicks: ON</button><span class="meta">ON mein kisi button/element par click karo, uska logic neeche aayega.</span></div>
+<iframe id="fr" sandbox="allow-scripts allow-forms" title="Preview"></iframe>
+<div class="hint">Kuch sites (login/bank/Google) preview mein adhoori khulti hain; source tabs phir bhi chalte hain.</div>
+<div id="logic"></div></section>
+<section class="pane" id="p-html"></section><section class="pane" id="p-css"></section><section class="pane" id="p-js"></section>
+<section class="pane" id="p-img"></section><section class="pane" id="p-api"></section></div>
 </main>
-
 <script>
-const $ = (id) => document.getElementById(id);
-const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-let current = { html: '', host: 'page' };
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt=b=>b>1048576?(b/1048576).toFixed(1)+' MB':(b/1024).toFixed(1)+' KB';
+const abs=(v,b)=>{try{return new URL(v,b).href}catch{return null}};
+let S=null;
+const RX={
+ html:/<!--[\s\S]*?-->|<\/?[a-zA-Z][\w:-]*|\/?>|"[^"\n]*"|'[^'\n]*'/g,
+ js:/\/\*[\s\S]*?\*\/|\/\/[^\n]*|`(?:\\[\s\S]|[^`\\])*`|"(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|\b(?:const|let|var|function|return|if|else|for|while|switch|case|break|new|class|import|export|async|await|try|catch|throw|typeof|this|null|undefined|true|false)\b/g,
+ css:/\/\*[\s\S]*?\*\/|"[^"\n]*"|'[^'\n]*'|@[\w-]+|[\w-]+(?=\s*:)/g};
+function hi(text,lang){
+ const re=new RegExp(RX[lang].source,'g');let o='',l=0,m;
+ while((m=re.exec(text))){o+=esc(text.slice(l,m.index));const x=m[0];
+  const c=x.startsWith('/*')||x.startsWith('//')||x.startsWith('<!--')?'c':/^["'`]/.test(x)?'s':lang==='html'?(x.startsWith('<')?'t':'k'):lang==='css'?(x[0]==='@'?'k':'t'):'k';
+  o+=`<span class="${c}">${esc(x)}</span>`;l=m.index+x.length;if(!x.length)re.lastIndex++}
+ return o+esc(text.slice(l))}
+function setSt(m,e){$('st').textContent=m;$('st').className=e?'err':''}
 
-function highlight(text) {
-  const re = /<!--[\s\S]*?-->|<\/?[a-zA-Z][\w:-]*|\/?>|"[^"\n]*"|'[^'\n]*'/g;
-  let out = '', last = 0, m;
-  while ((m = re.exec(text))) {
-    out += esc(text.slice(last, m.index));
-    const tok = m[0], safe = esc(tok);
-    const cls = tok.startsWith('<!--') ? 'c' : tok[0] === '"' || tok[0] === "'" ? 's' : tok.startsWith('<') ? 't' : 'e';
-    out += '<span class="' + cls + '">' + safe + '</span>';
-    last = m.index + tok.length;
-  }
-  return out + esc(text.slice(last));
+// ---------- code pane ----------
+function codePane(pane,lang,items,selId,line){
+ const it=items.find(x=>x.id===selId)||items[0];
+ if(!it){pane.innerHTML='<div class="hint">Is page mein kuch nahi mila.</div>';return}
+ const opts=items.map(x=>`<option value="${x.id}"${x===it?' selected':''}>${esc(x.label)}${x.text!=null?' ('+fmt(x.text.length)+')':''}</option>`).join('');
+ pane.innerHTML=`<div class="bar">${items.length>1?`<select>${opts}</select>`:''}<span class="meta">${esc(it.url||'')}</span><button class="g" data-a="copy">Copy</button><button class="g" data-a="dl">Download</button></div><div class="code"></div>`;
+ const box=pane.querySelector('.code');
+ if(it.text==null){box.innerHTML=`<div class="hint ${it.error?'':''}">${it.error?esc(it.error):'Loading…'}</div>`}
+ else{const LIM=300000,t=it.text.length>LIM?it.text.slice(0,LIM):it.text,n=t.split('\n').length;
+  box.innerHTML=`<div class="in"><pre class="gt">${Array.from({length:n},(_,i)=>i+1).join('\n')}</pre><pre class="src">${hi(t,lang)}</pre>${line?`<div class="hl" style="top:${12+(line-1)*20}px"></div>`:''}</div>`+(it.text.length>LIM?'<div class="hint">Sirf pehle 300 KB dikhaye; poori file Download se lo.</div>':'');
+  if(line)box.scrollTop=Math.max(0,(line-1)*20-60)}
+ const sel=pane.querySelector('select');if(sel)sel.onchange=()=>codePane(pane,lang,items,sel.value);
+ pane.querySelector('[data-a=copy]').onclick=async e=>{try{await navigator.clipboard.writeText(it.text||'');e.target.textContent='Copied'}catch{e.target.textContent='Failed'}setTimeout(()=>e.target.textContent='Copy',1400)};
+ pane.querySelector('[data-a=dl]').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([it.text||'']));a.download=(it.label.split('/').pop().split('?')[0]||'file')+(lang==='html'&&!/\.html?$/.test(it.label)?'.html':'');a.click()}}
+function openCode(kind,id,line){tab(kind);codePane($('p-'+kind),kind,S[kind],id,line);$('p-'+kind).scrollIntoView({block:'start'})}
+
+// ---------- tabs ----------
+const TABS=[['view','Preview'],['html','HTML'],['css','CSS'],['js','JS'],['img','Images'],['api','API']];
+function drawTabs(cur){$('tabs').innerHTML=TABS.map(([k,n])=>{const c=k==='css'||k==='js'?S[k].length:k==='img'?S.img.length:k==='api'?S.api.length:'';return `<button class="g${k===cur?' on':''}" data-k="${k}">${n}${c!==''?' ('+c+')':''}</button>`}).join('');
+ $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>tab(b.dataset.k))}
+function tab(k){drawTabs(k);document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('show',p.id==='p-'+k))}
+function lineOf(t,i){let n=1;for(let j=0;j<i;j++)if(t.charCodeAt(j)===10)n++;return n}
+
+// ---------- parse + load ----------
+function parse(html,base){
+ const d=new DOMParser().parseFromString(html,'text/html');const css=[],js=[],img=new Map();let ci=0,ji=0;
+ const addImg=(u,from)=>{if(u&&!img.has(u)&&img.size<150)img.set(u,from)};
+ d.querySelectorAll('link[rel~=stylesheet][href]').forEach(e=>{const u=abs(e.getAttribute('href'),base);if(u)css.push({id:'c'+ci++,label:u,url:u,ext:true})});
+ d.querySelectorAll('style').forEach(e=>css.push({id:'c'+ci++,label:'inline <style> #'+(ci),url:base,text:e.textContent}));
+ d.querySelectorAll('script').forEach(e=>{const ty=(e.type||'').toLowerCase();if(ty&&!/javascript|module/.test(ty))return;
+  if(e.src||e.getAttribute('src')){const u=abs(e.getAttribute('src'),base);if(u)js.push({id:'j'+ji++,label:u,url:u,ext:true})}else if(e.textContent.trim())js.push({id:'j'+ji++,label:'inline <script> #'+(ji+1),url:base,text:e.textContent})});
+ d.querySelectorAll('img').forEach(e=>{['src','data-src'].forEach(a=>addImg(e.getAttribute(a)&&abs(e.getAttribute(a),base),'<img>'))});
+ d.querySelectorAll('[srcset]').forEach(e=>e.getAttribute('srcset').split(',').forEach(s=>addImg(abs(s.trim().split(/\s+/)[0],base),'srcset')));
+ d.querySelectorAll('video[poster]').forEach(e=>addImg(abs(e.getAttribute('poster'),base),'poster'));
+ d.querySelectorAll('link[rel*=icon][href]').forEach(e=>addImg(abs(e.getAttribute('href'),base),'icon'));
+ d.querySelectorAll('meta[property="og:image"],meta[name="twitter:image"]').forEach(e=>addImg(abs(e.content,base),'social'));
+ const forms=[...d.querySelectorAll('form[action]')].map(f=>({method:(f.method||'GET').toUpperCase(),url:abs(f.getAttribute('action'),base),file:'HTML form'}));
+ return{css,js,img,forms}}
+function cssImgs(text,base){const re=/url\(\s*(['"]?)(.*?)\1\s*\)/g;let m;while((m=re.exec(text))){if(/\.(png|jpe?g|gif|webp|avif|svg|ico|bmp)(\?|#|$)/i.test(m[2])||/^data:image/.test(m[2])){const u=m[2].startsWith('data:')?m[2]:abs(m[2],base);if(u&&!S.imgMap.has(u)&&S.imgMap.size<150)S.imgMap.set(u,'CSS')}}}
+function findApis(){const out=new Map(),add=(m,u,it,i)=>{if(!u)return;const k=m+' '+u;if(out.has(k)||out.size>200)return;out.set(k,{method:m,url:abs(u,S.finalUrl)||u,file:it.label,id:it.id,line:i==null?null:lineOf(it.text,i),src:'code'})};
+ const R=[[/\bfetch\(\s*([`'"])((?:\\.|(?!\1).)*?)\1(?:\s*,\s*\{([^}]{0,300})\})?/g,m=>[((m[3]||'').match(/method\s*:\s*['"](\w+)/)||[])[1]?.toUpperCase()||'GET',m[2]]],
+ [/\baxios(?:\.(get|post|put|patch|delete))?\(\s*([`'"])(.*?)\2/g,m=>[(m[1]||'GET').toUpperCase(),m[3]]],
+ [/\.open\(\s*(['"])(GET|POST|PUT|PATCH|DELETE)\1\s*,\s*([`'"])(.*?)\3/gi,m=>[m[2].toUpperCase(),m[4]]],
+ [/\$\.(get|post|getJSON)\(\s*([`'"])(.*?)\2/g,m=>[m[1]==='post'?'POST':'GET',m[3]]],
+ [/url\s*:\s*([`'"])(.*?)\1/g,m=>['AJAX',m[2]]],
+ [/([`'"])((?:https?:)?\/\/[^`'"\s]+\/api\/[^`'"\s]*|\/api\/[^`'"\s]*|\/graphql[^`'"\s]*)\1/g,m=>['?',m[2]]]];
+ S.js.forEach(it=>{if(it.text)R.forEach(([re,f])=>{re.lastIndex=0;let m;while((m=re.exec(it.text))){const[a,b]=f(m);if(/^(#|javascript:|data:)/.test(b)||b.length<2)continue;add(a,b,it,m.index)}})});
+ S.api=[...out.values(),...S.forms.map(f=>({...f,src:'form'})),...S.live];}
+async function load(url){
+ const r=await fetch('/api/source?url='+encodeURIComponent(url));const d=await r.json();if(!r.ok)throw new Error(d.error||'Failed');return d}
+async function loadAll(){
+ const q=[...S.css,...S.js].filter(x=>x.ext);let done=0;
+ const run=async()=>{while(q.length){const it=q.shift();try{const d=await load(it.url);if(d.status>=400)throw new Error('HTTP '+d.status);it.text=d.html}catch(e){it.error='Load nahi hui: '+e.message}
+  done++;setSt('Files load ho rahi hain… '+done+'/'+(done+q.length))}};
+ await Promise.all([run(),run(),run(),run()]);
+ S.css.forEach(c=>c.text&&cssImgs(c.text,c.url));S.html&&cssImgs(S.html,S.finalUrl);
+ S.img=[...S.imgMap].map(([url,from])=>({url,from}));findApis();setSt('');renderAll(S.cur||'view')}
+function renderAll(cur){S.cur=cur;
+ codePane($('p-html'),'html',[{id:'h',label:S.finalUrl,url:S.finalUrl,text:S.html}]);
+ codePane($('p-css'),'css',S.css);codePane($('p-js'),'js',S.js);
+ $('p-img').innerHTML=S.img.length?`<div class="grid">${S.img.map(i=>`<a href="${i.url.startsWith('data:')?'#':esc(i.url)}" target="_blank" rel="noopener noreferrer"><img loading="lazy" referrerpolicy="no-referrer" alt="load nahi hui" src="${esc(i.url)}">${i.url.startsWith('data:')?'embedded image':esc(i.url.split('/').pop().split('?')[0]||i.url)}<br><i>${i.from}</i></a>`).join('')}</div>`:'<div class="hint">Koi image nahi mili.</div>';
+ $('p-api').innerHTML=S.api.length?S.api.map((a,n)=>`<div class="row"><span class="b">${a.method}</span>${esc(a.url||'')}<br><i>${a.src==='live'?'preview mein live dikhi':a.src==='form'?'HTML form':esc(a.file)+(a.line?':'+a.line:'')}</i>${a.id?` <button class="g" data-n="${n}">Code kholo</button>`:''}</div>`).join(''):'<div class="hint">Code mein koi API call nahi mili. Preview mein buttons dabane se live calls yahan aa sakti hain.</div>';
+ $('p-api').querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{const a=S.api[b.dataset.n];openCode('js',a.id,a.line)});
+ drawTabs(cur);tab(cur)}
+
+// ---------- iframe instrument (runs INSIDE the previewed page) ----------
+function atlasInject(){
+ var P=parent,store=new WeakMap(),inspect=true,tracing=false,calls=[],last=null,nets=0;
+ function send(m){m.__atlas=1;try{P.postMessage(m,'*')}catch(e){}}
+ function sh(x,n){x=String(x==null?'':x);return x.length>(n||500)?x.slice(0,n||500)+'…':x}
+ function note(kind,method,url,body){var u=url;try{u=new URL(url,document.baseURI).href}catch(e){}
+  var c={kind:kind,method:method,url:u,body:body==null?'':typeof body==='string'?sh(body):body instanceof FormData?'FormData':sh(Object.prototype.toString.call(body))};
+  if(tracing)calls.push(c);if(nets++<80)send({type:'net',call:c})}
+ try{var add=EventTarget.prototype.addEventListener;EventTarget.prototype.addEventListener=function(t,f,o){
+  try{if(f&&/^(click|submit|change|input|pointerdown|mousedown|touchstart|keydown|dblclick)$/.test(t)){var l=store.get(this);if(!l){l=[];store.set(this,l)}l.push({t:t,f:f})}}catch(e){}return add.call(this,t,f,o)}}catch(e){}
+ try{var F=window.fetch;if(F)window.fetch=function(i,o){try{note('fetch',(o&&o.method)||(i&&i.method)||'GET',typeof i==='string'?i:(i&&i.url)||i,o&&o.body)}catch(e){}return F.apply(this,arguments)}}catch(e){}
+ try{var XO=XMLHttpRequest.prototype.open,XS=XMLHttpRequest.prototype.send;XMLHttpRequest.prototype.open=function(m,u){this.__m=m;this.__u=u;return XO.apply(this,arguments)};
+  XMLHttpRequest.prototype.send=function(b){try{note('xhr',this.__m,this.__u,b)}catch(e){}return XS.apply(this,arguments)}}catch(e){}
+ try{var WS=window.WebSocket;window.WebSocket=function(u,p){note('websocket','CONNECT',u);return new WS(u,p)}}catch(e){}
+ ['alert','confirm','prompt'].forEach(function(n){window[n]=function(m){note(n,'',m);return n==='confirm'}});
+ window.open=function(u){note('open','GET',u||'');return null};
+ try{var mem={};['localStorage','sessionStorage'].forEach(function(n){try{window[n]}catch(e){var s={};Object.defineProperty(window,n,{value:{getItem:function(k){return k in s?s[k]:null},setItem:function(k,v){s[k]=String(v)},removeItem:function(k){delete s[k]},clear:function(){s={}},key:function(i){return Object.keys(s)[i]||null},get length(){return Object.keys(s).length}}})}})}catch(e){}
+ function sel(e){var p=[];while(e&&e.nodeType===1&&p.length<6){var s=e.tagName.toLowerCase();if(e.id){p.unshift(s+'#'+e.id);break}var c=typeof e.className==='string'&&e.className.trim()?'.'+e.className.trim().split(/\s+/).slice(0,2).join('.'):'';p.unshift(s+c);e=e.parentElement}return p.join(' > ')}
+ function who(n){return n===document?'document':n===window?'window':'<'+n.tagName.toLowerCase()+(n.id?'#'+n.id:'')+'>'}
+ function handlers(el){var out=[],seen=[];for(var n=el;n;n=n.parentNode||(n===document?window:null)){
+  var where=n===el?'is element par':who(n)+' par (parent/delegated)';
+  (store.get(n)||[]).forEach(function(x){var f=x.f,src=typeof f==='function'?f.toString():(f&&f.handleEvent?f.handleEvent.toString():String(f));out.push({type:x.t,where:where,kind:'listener',src:sh(src,5000)})});
+  if(n.nodeType===1){for(var i=0;i<n.attributes.length;i++){var a=n.attributes[i];if(/^on/.test(a.name)){out.push({type:a.name.slice(2),where:where,kind:'inline attribute',src:a.value});
+    (a.value.match(/[A-Za-z_$][\w$]*(?=\s*\()/g)||[]).forEach(function(nm){if(seen.indexOf(nm)<0&&typeof window[nm]==='function'){seen.push(nm);out.push({type:a.name.slice(2),where:'function '+nm+'() (inline handler ne bulaya)',kind:'function',src:sh(window[nm].toString(),5000)})}})}}
+   Object.keys(n).forEach(function(k){if(k.indexOf('__reactProps$')===0){var p=n[k];Object.keys(p).forEach(function(h){if(/^on[A-Z]/.test(h)&&typeof p[h]==='function')out.push({type:h.slice(2).toLowerCase(),where:where,kind:'React',src:sh(p[h].toString(),5000)})})}});
+   if(n._vei)Object.keys(n._vei).forEach(function(h){var v=n._vei[h]&&n._vei[h].value;[].concat(v||[]).forEach(function(f){if(typeof f==='function')out.push({type:h.slice(2).toLowerCase(),where:where,kind:'Vue',src:sh(f.toString(),5000)})})})}
+  if(n===window)break}return out}
+ function describe(el){var f=el.closest&&el.closest('form'),a=el.closest&&el.closest('a[href]');
+  return{tag:el.tagName.toLowerCase(),id:el.id||'',cls:typeof el.className==='string'?el.className:'',text:sh((el.innerText||el.value||'').trim(),80),html:sh(el.outerHTML,500),selector:sel(el),href:a?a.href:'',form:f?{action:f.action,method:(f.method||'get').toUpperCase()}:null,handlers:handlers(el)}}
+ add.call(window,'click',function(e){var el=e.target,a=el&&el.closest?el.closest('a[href]'):null;
+  if(tracing){if(a){e.preventDefault();calls.push({kind:'navigate',method:'GET',url:a.href,body:''})}return}
+  if(inspect){e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();last=el;send({type:'pick',info:describe(el)});return}
+  if(a){e.preventDefault();send({type:'nav',href:a.href})}},true);
+ add.call(window,'submit',function(e){e.preventDefault();var f=e.target;if(tracing){var names=[];try{new FormData(f).forEach(function(v,k){names.push(k)})}catch(x){}calls.push({kind:'form submit',method:(f.method||'get').toUpperCase(),url:f.action,body:'fields: '+names.join(', ')})}},true);
+ add.call(window,'message',function(ev){var d=ev.data;if(!d||!d.__cmd)return;
+  if(d.__cmd==='inspect')inspect=!!d.on;
+  if(d.__cmd==='run'&&last){tracing=true;calls=[];var b=document.documentElement.outerHTML.length;try{last.click()}catch(x){calls.push({kind:'error',method:'',url:String(x),body:''})}
+   setTimeout(function(){tracing=false;send({type:'trace',calls:calls,delta:document.documentElement.outerHTML.length-b})},1500)}});
 }
+function buildDoc(html,base){
+ const inj='<base href="'+esc(base)+'"><script>('+atlasInject.toString()+')()<\/script>';
+ html=html.replace(/<meta[^>]+http-equiv=["']?content-security-policy["']?[^>]*>/gi,'');
+ return /<head[^>]*>/i.test(html)?html.replace(/<head[^>]*>/i,m=>m+inj):inj+html}
 
-function setStatus(msg, isErr) { const s = $('status'); s.textContent = msg; s.className = isErr ? 'err' : ''; }
-const fmt = (b) => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : (b / 1024).toFixed(1) + ' KB';
+// ---------- logic panel ----------
+function showLogic(i){const L=$('logic');L.style.display='block';
+ const hs=i.handlers.length?i.handlers.map(h=>`<h3><span class="b">${esc(h.type)}</span>${esc(h.where)} <i>(${h.kind})</i></h3><pre>${esc(h.src)}</pre>`).join(''):'<div class="hint">Is element par koi click handler nahi mila (ya page ki JS chali nahi). Neeche "Code mein dhoondo" dekho.</div>';
+ L.innerHTML=`<div class="row"><b>&lt;${i.tag}&gt;</b> ${esc(i.text)}<br><i>${esc(i.selector)}</i><pre>${esc(i.html)}</pre>${i.href?'Link: '+esc(i.href)+'<br>':''}${i.form?'Form: '+i.form.method+' '+esc(i.form.action)+'<br>':''}</div><div class="row"><b>Logic (click par kya chalta hai)</b>${hs}<button class="g" id="cp">Copy logic</button> <button class="g" id="run">Click chalao aur dekho kya hua</button><div id="tr"></div></div><div class="row" id="fd"></div>`;
+ $('cp').onclick=async e=>{try{await navigator.clipboard.writeText(i.handlers.map(h=>`// ${h.type} on ${h.where}\n${h.src}`).join('\n\n'));e.target.textContent='Copied'}catch{}};
+ $('run').onclick=()=>{$('tr').innerHTML='<div class="hint">Chal raha hai…</div>';$('fr').contentWindow.postMessage({__cmd:'run'},'*')};
+ const terms=[];if(i.id)terms.push(i.id);i.cls.split(/\s+/).filter(Boolean).slice(0,3).forEach(c=>terms.push(c));
+ i.handlers.filter(h=>h.kind==='function').forEach(h=>{const m=h.where.match(/^function (\S+)\(/);if(m)terms.push(m[1])});
+ const hits=[];S.js.forEach(it=>{if(!it.text)return;terms.forEach(t=>{const re=new RegExp('(?:[\'"`#.]|getElementById\\([\'"]|function\\s+)'+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g');let m,n=0;while((m=re.exec(it.text))&&n++<3&&hits.length<12){const ln=lineOf(it.text,m.index);hits.push({it,ln,t,snip:it.text.split('\n')[ln-1].trim().slice(0,140)})}})});
+ $('fd').innerHTML='<b>Code mein dhoondo</b> '+(hits.length?hits.map((h,n)=>`<div style="margin-top:6px"><button class="g" data-h="${n}">${esc(h.it.label.split('/').pop().slice(0,24))}:${h.ln}</button> <code>${esc(h.snip)}</code></div>`).join(''):'<div class="hint">JS files mein is element ka naam nahi mila.</div>');
+ $('fd').querySelectorAll('[data-h]').forEach(b=>b.onclick=()=>{const h=hits[b.dataset.h];openCode('js',h.it.id,h.ln)});
+ L.scrollIntoView({block:'nearest'})}
+window.addEventListener('message',ev=>{const d=ev.data;if(!S||!d||!d.__atlas||ev.source!==$('fr').contentWindow)return;
+ if(d.type==='pick')showLogic(d.info);
+ if(d.type==='net'&&!S.live.some(x=>x.method+x.url===d.call.method+d.call.url)){S.live.push({method:d.call.method||'?',url:d.call.url,src:'live'});findApis();$('p-api').dataset.stale=1;renderApiOnly()}
+ if(d.type==='trace'){$('tr').innerHTML=(d.calls.length?d.calls.map(c=>`<div class="row"><span class="b">${esc(c.kind)}${c.method?' '+esc(c.method):''}</span>${esc(c.url)}${c.body?'<br><i>'+esc(typeof c.body==='string'?c.body:'')+'</i>':''}</div>`).join(''):'<div class="hint">Koi network call, alert ya navigation nahi hui.</div>')+`<div class="hint">Page ka HTML ${d.delta>=0?'+':''}${d.delta} characters badla.</div>`}
+ if(d.type==='nav'){if(confirm('Ye link is viewer mein kholein?\n'+d.href)){$('u').value=d.href;$('f').requestSubmit()}}});
+function renderApiOnly(){const c=S.cur;renderAll(c==='view'?'view':c)}
+$('ins').onclick=()=>{const on=!$('ins').classList.contains('on');$('ins').classList.toggle('on',on);$('ins').textContent='Inspect clicks: '+(on?'ON':'OFF');$('fr').contentWindow.postMessage({__cmd:'inspect',on},'*')};
 
-$('f').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const url = $('u').value.trim();
-  if (!url) return setStatus('Pehle link paste karo.', true);
-  $('go').disabled = true; $('result').style.display = 'none'; setStatus('Fetching…');
-  try {
-    const r = await fetch('/api/source?url=' + encodeURIComponent(url));
-    const d = await r.json();
-    if (!r.ok) throw new Error(d.error || 'Something went wrong.');
-    const lines = d.html.split('\n').length;
-    current = { html: d.html, host: new URL(d.finalUrl).hostname };
-    $('meta').textContent = d.finalUrl + '  •  HTTP ' + d.status + '  •  ' + lines + ' lines  •  ' + fmt(d.bytes);
-    $('gutter').textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
-    $('src').innerHTML = highlight(d.html);
-    $('result').style.display = 'block';
-    setStatus('');
-  } catch (err) {
-    setStatus(err.message, true);
-  } finally { $('go').disabled = false; }
-});
-
-$('copy').addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText(current.html); $('copy').textContent = 'Copied'; }
-  catch { $('copy').textContent = 'Copy failed'; }
-  setTimeout(() => ($('copy').textContent = 'Copy'), 1500);
-});
-
-$('dl').addEventListener('click', () => {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([current.html], { type: 'text/html' }));
-  a.download = current.host + '.html';
-  a.click(); URL.revokeObjectURL(a.href);
-});
-</script>
-</body>
-</html>
+$('f').addEventListener('submit',async e=>{e.preventDefault();const url=$('u').value.trim();if(!url)return setSt('Pehle link paste karo.',true);
+ $('go').disabled=true;$('res').style.display='none';$('logic').style.display='none';setSt('Fetching…');
+ try{const d=await load(url);const p=parse(d.html,d.finalUrl);
+  S={html:d.html,finalUrl:d.finalUrl,css:p.css,js:p.js,forms:p.forms,imgMap:p.img,img:[],api:[],live:[],cur:'view'};
+  p.css.concat(p.js).forEach(x=>{if(!x.ext)x.text=x.text});
+  S.css.concat(S.js).forEach(x=>{if(x.ext)x.text=null});
+  $('ins').classList.add('on');$('ins').textContent='Inspect clicks: ON';
+  $('fr').srcdoc=buildDoc(d.html,d.finalUrl);$('res').style.display='block';
+  S.css.forEach(c=>c.text&&cssImgs(c.text,c.url));S.img=[...S.imgMap].map(([url,from])=>({url,from}));findApis();renderAll('view');
+  setSt('Files load ho rahi hain…');await loadAll()}
+ catch(err){setSt(err.message,true)}finally{$('go').disabled=false}});
+</script></body></html>
